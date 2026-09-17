@@ -1,0 +1,17 @@
+meta {
+  name: create_client
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:8080/client?page=5&size=3&sort=address
+  body: json
+  auth: none
+}
+
+params:query {
+  page: 5
+  size: 3
+  sort: address
+}

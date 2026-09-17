@@ -11,3 +11,7 @@ spring:
     open-in-view: false
 server:
   port: ${PORT:8080}
+app:
+  jwt:
+    secret: ${JWT_SECRET:this-is-a-dev-only-default-secret-change-it-32bytes+}
+    ttl-minutes: 30

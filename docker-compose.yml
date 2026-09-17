@@ -33,6 +33,7 @@ services:
       DB_NAME: chn_test
       DB_USERNAME: root
       DB_PASSWORD: root
+      JWT_SECRET: ${JWT_SECRET:-this-is-a-dev-only-default-secret-change-it-32bytes+}
     ports:
       - "8080:8080"
 
