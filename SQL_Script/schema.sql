@@ -53,10 +53,6 @@ CREATE TABLE `user` (
   UNIQUE KEY `uk_user_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO chn_test.`user`
-(id, username, password_hash, `role`, email, is_active)
-VALUES('96d6f901-ec64-4d5e-b825-e762154fad9c', 'usuario123', '$2a$10$srowhttjhszDq19qRl.qeOCj1jfannfpjcSpjguoYf/nqpqZJTbRS', 'USER', 'usuario123@gmail.com', 1);
-
 
 -- chn_test.loan definition
 
