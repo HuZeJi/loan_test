@@ -1,0 +1,102 @@
+# ==============================
+# Backend - Java / Spring Boot (be_test/)
+# ==============================
+be_test/HELP.md
+**/.gradle/
+**/build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+**/bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+**/out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ==============================
+# Frontend - Angular / Node
+# ==============================
+**/node_modules/
+**/dist/
+**/.angular/
+**/.angular/cache/
+**/npm-debug.log*
+**/yarn-error.log*
+**/yarn-debug.log*
+**/pnpm-debug.log*
+**/.sass-cache/
+**/connect.lock
+**/coverage/
+**/libpeerconnection.log
+**/testem.log
+**/typings/
+**/.env
+**/.env.local
+**/.env.*.local
+
+# ==============================
+# SQL / Database
+# ==============================
+SQL_Script/*.bak
+SQL_Script/*.dump
+*.sqlite
+*.sqlite3
+*.db
+
+# ==============================
+# graphify (generated knowledge graph)
+# ==============================
+graphify-out/
+
+# ==============================
+# Docker
+# ==============================
+*.pid
+
+# ==============================
+# IDEs
+# ==============================
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+!.vscode/extensions.json
+
+### Eclipse ###
+.metadata
+.classpath
+.project
+.settings/
+
+# ==============================
+# OS files
+# ==============================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ==============================
+# Logs & env
+# ==============================
+*.log
+.env

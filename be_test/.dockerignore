@@ -1,0 +1,8 @@
+.gradle
+build
+.idea
+.gradle
+*.iml
+out
+bin
+HELP.md

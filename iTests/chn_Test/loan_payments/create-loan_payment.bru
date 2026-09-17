@@ -1,0 +1,23 @@
+meta {
+  name: create_client
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/loan/:loanId/loan-payment
+  body: json
+  auth: none
+}
+
+params:path {
+  loanId: a39b5e50-c5d8-4b7c-97f2-ffc20b232eb2
+}
+
+body:json {
+  {
+    "paymentMethod": "cash"
+    , "amount": 1000
+    , "userId": "1"
+  }
+}

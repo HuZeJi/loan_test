@@ -1,0 +1,15 @@
+meta {
+  name: create_client
+  type: http
+  seq: 1
+}
+
+delete {
+  url: http://localhost:8080/client/:clientId
+  body: json
+  auth: none
+}
+
+params:path {
+  clientId: e3dc8582-094f-427b-9def-353f48811905
+}

@@ -1,0 +1,19 @@
+meta {
+  name: create_client
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/loan
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "amount": 1200.00
+    , "loanTermId": "1"
+    , "clientId": "c4ffd8c7-9c3a-4aed-b0f2-eaf40ed16daf"
+  }
+}

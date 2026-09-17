@@ -1,0 +1,20 @@
+meta {
+  name: create_client
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:8080/client/:clientId/loan/approved?index=0&size=2
+  body: json
+  auth: none
+}
+
+params:query {
+  index: 0
+  size: 2
+}
+
+params:path {
+  clientId: 60ba9b3b-d403-4bda-862f-751310f6ea70
+}

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: test
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:chn_test}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+server:
+  port: ${PORT:8080}

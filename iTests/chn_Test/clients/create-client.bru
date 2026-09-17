@@ -1,0 +1,22 @@
+meta {
+  name: create_client
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/client
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Victor",
+    "lastName": "Jimenez",
+    "birthday": "1997-11-02",
+    "address": "template",
+    "email": "25hugojim123@gmail.com",
+    "phoneNumber": "58219949"
+  }
+}
