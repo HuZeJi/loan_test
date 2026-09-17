@@ -1,0 +1,64 @@
+<div class="page">
+  <div class="header">
+    <h2> 
+      <a routerLink="/clients">Clientes</a> / 
+      <a [routerLink]="['/clients', clientId, 'loans']">Prestamos</a> / 
+      Pagos del prestamo
+    </h2>
+    <button mat-flat-button color="primary" (click)="newPayment()">Registrar pago</button>
+  </div>
+
+  @if (showForm()) {
+    <form (ngSubmit)="register()" #f="ngForm" class="form-card">
+      <mat-form-field appearance="outline">
+        <mat-label>Monto</mat-label>
+        <input matInput type="number" name="amount" [(ngModel)]="newAmount" required min="1" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Metodo de pago</mat-label>
+        <mat-select name="paymentMethod" [(ngModel)]="newMethod" required>
+          <mat-option value="EFECTIVO">Efectivo</mat-option>
+          <mat-option value="TRANSFERENCIA">Transferencia</mat-option>
+          <mat-option value="TARJETA">Tarjeta</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <div class="form-actions">
+        <button mat-flat-button color="primary" type="submit" [disabled]="f.invalid">Registrar</button>
+        <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  }
+
+  <table mat-table [dataSource]="payments()">
+    <ng-container matColumnDef="paymentDate">
+      <th mat-header-cell *matHeaderCellDef>Fecha</th>
+      <td mat-cell *matCellDef="let p">{{ p.paymentDate }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="paymentMethod">
+      <th mat-header-cell *matHeaderCellDef>Metodo</th>
+      <td mat-cell *matCellDef="let p">{{ p.paymentMethod }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef>Monto</th>
+      <td mat-cell *matCellDef="let p">{{ p.amount }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+
+  <mat-paginator
+    [length]="total()"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[5, 10, 25]"
+    (page)="onPage($event)"
+  ></mat-paginator>
+</div>

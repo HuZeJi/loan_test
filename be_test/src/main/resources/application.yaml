@@ -15,3 +15,5 @@ app:
   jwt:
     secret: ${JWT_SECRET:this-is-a-dev-only-default-secret-change-it-32bytes+}
     ttl-minutes: 30
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200,http://localhost:80,http://localhost}

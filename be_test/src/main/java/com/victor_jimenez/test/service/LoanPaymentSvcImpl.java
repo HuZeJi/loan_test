@@ -1,6 +1,7 @@
 package com.victor_jimenez.test.service;
 
 import com.victor_jimenez.test.model.Loan;
+import com.victor_jimenez.test.model.LoanApplicationStatus;
 import com.victor_jimenez.test.model.LoanDTO;
 import com.victor_jimenez.test.model.LoanPayment;
 import com.victor_jimenez.test.model.LoanPaymentDTO;
@@ -9,6 +10,8 @@ import com.victor_jimenez.test.model.User;
 import com.victor_jimenez.test.repository.LoanPaymentRepository;
 import com.victor_jimenez.test.repository.LoanRepository;
 import com.victor_jimenez.test.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,8 @@ import java.time.LocalDate;
 
 @Service
 class LoanPaymentSvcImpl implements LoanPaymentSvc{
+
+    private static final Logger log = LoggerFactory.getLogger(LoanPaymentSvcImpl.class);
 
     private final LoanRepository loanRepository;
     private final LoanPaymentRepository loanPaymentRepository;
@@ -44,6 +49,10 @@ class LoanPaymentSvcImpl implements LoanPaymentSvc{
     public LoanPaymentDTO registerPayment(LoanPaymentDTO loanPayment, String loanId) {
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El prestamo asociado no existe"));
+
+        if (loan.getApplicationStatus() != LoanApplicationStatus.APPROVED) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, "El prestamo no esta aprobado");
+        }
 
         if (loan.getPaymentStatus() == LoanPaymentStatus.PAID) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, "El prestamo ya esta solventado");
@@ -69,6 +78,8 @@ class LoanPaymentSvcImpl implements LoanPaymentSvc{
                 : LoanPaymentStatus.PARTIALLY_PAID);
         loanRepository.save(loan);
 
+        log.info("Pago registrado: loanId={}, paymentId={}, amount={}, pendingAmount={}, paymentStatus={}",
+                loanId, savedLoanPayment.getId(), savedLoanPayment.getAmount(), newPendingAmount, loan.getPaymentStatus());
         return LoanPaymentDTO.toDto(savedLoanPayment);
     }
 }

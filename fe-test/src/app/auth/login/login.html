@@ -1,0 +1,20 @@
+<div class="auth-page">
+  <mat-card>
+    <mat-card-title>Iniciar sesion</mat-card-title>
+    <form (ngSubmit)="submit()" #form="ngForm">
+      <mat-form-field appearance="outline">
+        <mat-label>Usuario</mat-label>
+        <input matInput name="username" [(ngModel)]="username" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" name="password" [(ngModel)]="password" required />
+      </mat-form-field>
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Ingresar</button>
+    </form>
+    <p><a routerLink="/signup">Crear una cuenta</a></p>
+  </mat-card>
+</div>

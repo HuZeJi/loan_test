@@ -10,8 +10,6 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      # Se ejecuta automaticamente al iniciar el contenedor por primera vez,
-      # creando las tablas descritas en el Diagrama ER.
       - ./SQL_Script/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
@@ -33,9 +31,19 @@ services:
       DB_NAME: chn_test
       DB_USERNAME: root
       DB_PASSWORD: root
-      JWT_SECRET: ${JWT_SECRET:-this-is-a-dev-only-default-secret-change-it-32bytes+}
+      JWT_SECRET: VgfOMqVe/hFiKMwT8YBSFWjNwIctj67VALC0pKhG/PA=
     ports:
       - "8080:8080"
+
+  frontend:
+    build:
+      context: ./fe-test
+    container_name: chn_test_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
 
 volumes:
   db_data:

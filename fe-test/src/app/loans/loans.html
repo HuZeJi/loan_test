@@ -1,0 +1,96 @@
+<div class="page">
+  <div class="header">
+    <h2>
+      <a routerLink="/clients">Clientes</a> / Prestamos
+    </h2>
+    <button mat-flat-button color="primary" (click)="newLoan()">Solicitar prestamo</button>
+  </div>
+
+  <mat-slide-toggle [(ngModel)]="onlyApproved" (change)="toggleApproved()">Solo aprobados</mat-slide-toggle>
+
+  @if (showForm()) {
+    <form (ngSubmit)="request()" #f="ngForm" class="form-card">
+      <mat-form-field appearance="outline">
+        <mat-label>Monto</mat-label>
+        <input matInput type="number" name="amount" [(ngModel)]="newAmount" required min="1" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Plazo</mat-label>
+        <mat-select name="loanTermId" [(ngModel)]="newTermId" required>
+          @for (term of terms(); track term.id) {
+            <mat-option [value]="term.id">{{ term.description }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <div class="form-actions">
+        <button mat-flat-button color="primary" type="submit" [disabled]="f.invalid">Solicitar</button>
+        <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  }
+
+  <table mat-table [dataSource]="loans()">
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef>Monto</th>
+      <td mat-cell *matCellDef="let l">{{ l.amount }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="pendingAmount">
+      <th mat-header-cell *matHeaderCellDef>Saldo pendiente</th>
+      <td mat-cell *matCellDef="let l">{{ l.pendingAmount }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="applicationStatus">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let l">{{ l.applicationStatus }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="paymentStatus">
+      <th mat-header-cell *matHeaderCellDef>Pago</th>
+      <td mat-cell *matCellDef="let l">{{ l.paymentStatus }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let l">
+        @if (l.applicationStatus === 'APPROVED') {
+          <a mat-button [routerLink]="['/clients', clientId,'loans', l.id, 'payments']">Pagos</a>
+        }
+        @if (l.applicationStatus === 'PENDING') {
+          <button mat-button (click)="startResolve(l)">Resolver</button>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+
+  <mat-paginator
+    [length]="total()"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[5, 10, 25]"
+    (page)="onPage($event)"
+  ></mat-paginator>
+
+  @if (resolvingLoan(); as loan) {
+    <div class="form-card">
+      <p>Resolver prestamo por {{ loan.amount }}</p>
+      <mat-form-field appearance="outline">
+        <mat-label>Notas de resolucion</mat-label>
+        <input matInput [(ngModel)]="resolutionNotes" name="resolutionNotes" />
+      </mat-form-field>
+      <div class="form-actions">
+        <button mat-flat-button color="primary" (click)="approve()">Aprobar</button>
+        <button mat-flat-button color="warn" (click)="reject()">Rechazar</button>
+        <button mat-button (click)="cancelResolve()">Cancelar</button>
+      </div>
+    </div>
+  }
+</div>

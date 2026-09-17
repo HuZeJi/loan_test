@@ -26,11 +26,12 @@ public class JwtService {
         this.ttlMinutes = ttlMinutes;
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String userId, String username, String role) {
         Instant now = Instant.now();
         Instant expiry = now.plusSeconds(getTtlSeconds());
         return Jwts.builder()
                 .subject(username)
+                .claim("userId", userId)
                 .claim("role", role)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))
@@ -44,6 +45,12 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    // Read directly from the token so callers (like the request-logging filter)
+    // can get the user id without a DB lookup or a fully authenticated SecurityContext.
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
     }
 
     public boolean isTokenValid(String token, String username) {

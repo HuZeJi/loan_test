@@ -1,0 +1,9 @@
+@if (auth.loggedIn()) {
+  <mat-toolbar color="primary">
+    <span>Prestamos Bancarios</span>
+    <span class="spacer"></span>
+    <button mat-button (click)="logout()">Cerrar sesion</button>
+  </mat-toolbar>
+}
+
+<router-outlet />

@@ -4,14 +4,16 @@ meta {
   seq: 1
 }
 
-get {
-  url: http://localhost:8080/client?page=5&size=3&sort=address
+post {
+  url: http://localhost:8081/auth/signup
   body: json
   auth: none
 }
 
-params:query {
-  page: 5
-  size: 3
-  sort: address
+body:json {
+  {
+    "username": "victor"
+    , "password": "12345678"
+    , "email": "hugojim123@gmail.com"
+  }
 }

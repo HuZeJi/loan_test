@@ -1,0 +1,18 @@
+meta {
+  name: create_client
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "victor"
+    , "password": "12345678"
+  }
+}

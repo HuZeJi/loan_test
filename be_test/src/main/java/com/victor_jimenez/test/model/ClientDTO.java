@@ -11,33 +11,45 @@ import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
 @Data
 @Getter
 @Setter
+@Schema(description = "Datos de un cliente para crear, actualizar o consultar")
 public class ClientDTO {
+
+    @Schema(description = "Identificador unico del cliente (UUID). Se ignora al crear.", example = "b3f1c2a0-1234-4c56-9abc-1234567890ab")
     private String id;
 
     @NotBlank
+    @Schema(description = "Nombre(s) del cliente", example = "Maria")
     private String name;
 
     @NotBlank
+    @Schema(description = "Apellido(s) del cliente", example = "Gonzalez")
     private String lastName;
 
     @NotNull
     @Past
+    @Schema(description = "Fecha de nacimiento, debe ser una fecha pasada", example = "1990-05-20")
     private LocalDate birthday;
 
+    @Schema(description = "Direccion fisica del cliente", example = "Ciudad de guatemala")
     private String address;
 
     @NotBlank
     @Email
+    @Schema(description = "Correo electronico del cliente, debe ser unico en el sistema", example = "maria.gonzalez@example.com")
     private String email;
 
     @NotBlank
+    @Schema(description = "Numero de telefono de contacto", example = "35157895")
     private String phoneNumber;
+
+    @Schema(description = "Indica si el cliente esta activo", example = "true")
     private boolean active;
 
     public Client toEntity(){

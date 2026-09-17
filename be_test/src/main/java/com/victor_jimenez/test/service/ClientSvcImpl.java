@@ -5,6 +5,8 @@ import com.victor_jimenez.test.model.ClientDTO;
 import com.victor_jimenez.test.model.Loan;
 import com.victor_jimenez.test.repository.ClientRepository;
 import com.victor_jimenez.test.repository.LoanRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,12 +16,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Reglas de negocio de gestion de clientes.
- * Ver docs/DIAGRAMS.md - "Gestion de clientes".
- */
 @Service
 class ClientSvcImpl implements ClientSvc{
+
+    private static final Logger log = LoggerFactory.getLogger(ClientSvcImpl.class);
 
     private final ClientRepository clientRepository;
     private final LoanRepository loanRepository;
@@ -35,12 +35,16 @@ class ClientSvcImpl implements ClientSvc{
         if (clientRepository.existsByEmail(client.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe el cliente");
         }
-        return ClientDTO.toDTO(clientRepository.save(client.toEntity()));
+        Client entity = client.toEntity();
+        entity.setActive(true);
+        Client saved = clientRepository.save(entity);
+        log.info("Cliente creado: clientId={}, email={}", saved.getId(), saved.getEmail());
+        return ClientDTO.toDTO(saved);
     }
 
     @Override
     public Page<ClientDTO> list(Pageable pageable) {
-        return clientRepository.findAll(pageable).map(ClientDTO::toDTO);
+        return clientRepository.findByActive(Boolean.TRUE, pageable).map(ClientDTO::toDTO);
     }
 
     @Override
@@ -69,6 +73,7 @@ class ClientSvcImpl implements ClientSvc{
             loanRepository.save(loan);
         });
         clientRepository.save(existing);
+        log.info("Cliente desactivado: clientId={}, prestamosDesactivados={}", clientId, loans.size());
     }
 
     private Client findOrThrow(String clientId) {

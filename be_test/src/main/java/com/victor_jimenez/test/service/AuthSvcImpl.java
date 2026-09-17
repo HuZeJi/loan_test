@@ -4,8 +4,11 @@ import com.victor_jimenez.test.model.AuthResponse;
 import com.victor_jimenez.test.model.LoginRequest;
 import com.victor_jimenez.test.model.SignupRequest;
 import com.victor_jimenez.test.model.User;
+import com.victor_jimenez.test.model.UserInfoResponse;
 import com.victor_jimenez.test.repository.UserRepository;
 import com.victor_jimenez.test.security.JwtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 class AuthSvcImpl implements AuthSvc {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthSvcImpl.class);
     private static final String DEFAULT_ROLE = "USER";
 
     private final UserRepository userRepository;
@@ -52,8 +56,9 @@ class AuthSvcImpl implements AuthSvc {
         user.setRole(DEFAULT_ROLE);
         user.setActive(true);
         userRepository.save(user);
+        log.info("Usuario registrado: username={}, userId={}", user.getUsername(), user.getId());
 
-        return buildAuthResponse(user.getUsername(), user.getRole());
+        return buildAuthResponse(user);
     }
 
     @Override
@@ -62,17 +67,26 @@ class AuthSvcImpl implements AuthSvc {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         } catch (AuthenticationException ex) {
+            log.warn("Intento de login fallido para username={}", request.getUsername());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario o contrasena invalidos");
         }
 
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario o contrasena invalidos"));
 
-        return buildAuthResponse(user.getUsername(), user.getRole());
+        log.info("Login exitoso: username={}, userId={}", user.getUsername(), user.getId());
+        return buildAuthResponse(user);
     }
 
-    private AuthResponse buildAuthResponse(String username, String role) {
-        String token = jwtService.generateToken(username, role);
+    @Override
+    public UserInfoResponse me(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        return new UserInfoResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+    }
+
+    private AuthResponse buildAuthResponse(User user) {
+        String token = jwtService.generateToken(user.getId(), user.getUsername(), user.getRole());
         return new AuthResponse(token, "Bearer", jwtService.getTtlSeconds());
     }
 }

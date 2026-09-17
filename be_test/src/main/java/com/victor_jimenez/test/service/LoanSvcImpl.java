@@ -11,6 +11,8 @@ import com.victor_jimenez.test.repository.ClientRepository;
 import com.victor_jimenez.test.repository.LoanRepository;
 import com.victor_jimenez.test.repository.LoanTermRepository;
 import com.victor_jimenez.test.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,8 @@ import java.time.LocalDateTime;
 
 @Service
 class LoanSvcImpl implements LoanSvc {
+
+    private static final Logger log = LoggerFactory.getLogger(LoanSvcImpl.class);
 
     private final LoanRepository loanRepository;
     private final ClientRepository clientRepository;
@@ -52,8 +56,11 @@ class LoanSvcImpl implements LoanSvc {
         loan.setClient(client);
         loan.setLoanTerm(loanTerm);
         loan.setRequestDate(LocalDateTime.now());
+        loan.setActive(Boolean.TRUE);
 
-        return LoanDTO.toDTO(loanRepository.save(loan));
+        Loan saved = loanRepository.save(loan);
+        log.info("Prestamo creado: loanId={}, clientId={}, amount={}", saved.getId(), client.getId(), saved.getAmount());
+        return LoanDTO.toDTO(saved);
     }
 
     @Override
@@ -94,6 +101,8 @@ class LoanSvcImpl implements LoanSvc {
         loan.setResolutionDate(LocalDate.now());
         loan.setResolutionNotes(resolutionNotes);
 
-        return LoanDTO.toDTO(loanRepository.save(loan));
+        Loan saved = loanRepository.save(loan);
+        log.info("Prestamo resuelto: loanId={}, status={}", saved.getId(), status);
+        return LoanDTO.toDTO(saved);
     }
 }
